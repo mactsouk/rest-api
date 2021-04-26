@@ -77,7 +77,8 @@ func createImageDirectory(d string) error {
 		return err
 	}
 
-	fileInfo, err := os.Stat(IMAGESPATH)
+	fileInfo, _ := os.Stat(IMAGESPATH)
+
 	mode := fileInfo.Mode()
 	if !mode.IsDir() {
 		msg := IMAGESPATH + " is not a directory!"
@@ -94,7 +95,6 @@ func main() {
 	}
 
 	mux := mux.NewRouter()
-
 	putMux := mux.Methods(http.MethodPut).Subrouter()
 	putMux.HandleFunc("/files/{filename:[a-zA-Z0-9][a-zA-Z0-9\\.]*[a-zA-Z0-9]}", uploadFile)
 

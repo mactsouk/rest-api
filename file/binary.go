@@ -55,19 +55,21 @@ func saveToFile(path string, contents io.Reader) error {
 	}
 	defer f.Close()
 
+	// Write data to disk
 	n, err := io.Copy(f, contents)
 	if err != nil {
 		return err
 	}
 	log.Println("Bytes written:", n)
+
 	return nil
 }
 
 func createImageDirectory(d string) error {
-	_, err := os.Stat(IMAGESPATH)
+	_, err := os.Stat(d)
 	if os.IsNotExist(err) {
-		log.Println("Creating:", IMAGESPATH)
-		err = os.MkdirAll(IMAGESPATH, 0755)
+		log.Println("Creating:", d)
+		err = os.MkdirAll(d, 0755)
 		if err != nil {
 			log.Println(err)
 			return err
@@ -77,13 +79,14 @@ func createImageDirectory(d string) error {
 		return err
 	}
 
-	fileInfo, _ := os.Stat(IMAGESPATH)
+	fileInfo, _ := os.Stat(d)
 
 	mode := fileInfo.Mode()
 	if !mode.IsDir() {
-		msg := IMAGESPATH + " is not a directory!"
+		msg := d + " is not a directory!"
 		return errors.New(msg)
 	}
+
 	return nil
 }
 
@@ -112,6 +115,7 @@ func main() {
 	}
 
 	log.Println("Listening to", PORT)
+
 	err = s.ListenAndServe()
 	if err != nil {
 		log.Printf("Error starting server: %s\n", err)

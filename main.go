@@ -1,12 +1,17 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"time"
 
 	"github.com/gorilla/mux"
 )
+
+// PORT is where the web server listens to
+var PORT = ":1234"
 
 func main() {
 	arguments := os.Args
@@ -35,17 +40,15 @@ func main() {
 		log.Println("Listening to", PORT)
 		err := s.ListenAndServe()
 		if err != nil {
-		  log.Printf("Error starting server: %s\n", err)
-		  return
+			log.Printf("Error starting server: %s\n", err)
+			return
 		}
-	  }()
-	
-	  sigs := make(chan os.Signal, 1)
-	  signal.Notify(sigs, os.Interrupt)
-	  sig := <-sigs
-	  log.Println("Quitting after signal:", sig)
-	  time.Sleep(5 * time.Second)
-	  s.Shutdown(nil)
-	}
+	}()
 
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, os.Interrupt)
+	sig := <-sigs
+	log.Println("Quitting after signal:", sig)
+	time.Sleep(5 * time.Second)
+	s.Shutdown(nil)
 }

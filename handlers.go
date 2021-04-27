@@ -7,6 +7,12 @@ import (
 	"time"
 )
 
+type notAllowedHandler struct{}
+
+func (h notAllowedHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+	MethodNotAllowedHandler(rw, r)
+}
+
 func DefaultHandler(rw http.ResponseWriter, r *http.Request) {
 	log.Println("Serving:", r.URL.Path, "from", r.Host, "with method", r.Method)
 	rw.WriteHeader(http.StatusNotFound)

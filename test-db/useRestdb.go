@@ -1,7 +1,7 @@
 package main
 
 import (
-	"database/sql"
+	"fmt"
 
 	_ "github.com/lib/pq"
 	"github.com/mactsouk/restdb"
@@ -26,6 +26,9 @@ var (
 )
 
 func main() {
-	var db *sql.DB
-	db = restdb.ConnectPostgres()
+	db := restdb.ConnectPostgres()
+	fmt.Println(db)
+
+	t := restdb.User{}
+	fmt.Println(t)
 }

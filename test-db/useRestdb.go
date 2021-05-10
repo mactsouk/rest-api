@@ -16,15 +16,6 @@ type User struct {
 	Active    int
 }
 
-// PostgreSQL Connection details
-var (
-	Hostname = "postgres"
-	Port     = 5432
-	Username = "mtsouk"
-	Password = "pass"
-	Database = "restapi"
-)
-
 func main() {
 	db := restdb.ConnectPostgres()
 	fmt.Println(db)

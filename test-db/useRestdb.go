@@ -67,7 +67,7 @@ func main() {
 			return
 		}
 
-		fmt.Println(name)
+		fmt.Println(username)
 	}
 
 	if err != nil {

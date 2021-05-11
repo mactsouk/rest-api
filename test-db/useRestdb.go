@@ -28,7 +28,7 @@ var (
 func main() {
 	db := restdb.ConnectPostgres()
 	fmt.Println(db)
-	db.Close()
+	defer db.Close()
 
 	err := db.Ping()
 	if err != nil {

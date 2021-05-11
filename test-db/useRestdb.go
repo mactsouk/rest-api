@@ -66,7 +66,7 @@ func main() {
 	}
 
 	log.Println("Populating PostgreSQL")
-	user := restdb.User{0, "mtsouk", "admin", time.Now().Unix(), 1, 0}
+	user := restdb.User{0, "mtsouk", "admin", 1, time.Now().Unix(), 1}
 	if restdb.InsertUser(user) {
 		fmt.Println("User inserted successfully.")
 	} else {

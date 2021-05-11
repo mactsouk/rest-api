@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"time"
 
 	_ "github.com/lib/pq"
 	"github.com/mactsouk/restdb"
@@ -61,6 +63,14 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 		return
+	}
+
+	log.Println("Populating PostgreSQL")
+	user := restdb.User{0, "mtsouk", "admin", time.Now().Unix(), 1, 0}
+	if restdb.InsertUser(user) {
+		fmt.Println("User inserted successfully.")
+	} else {
+		fmt.Println("Insert failed!")
 	}
 
 }

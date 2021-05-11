@@ -1,4 +1,4 @@
 github.com/lib/pq v1.10.1 h1:6VXZrLU0jHBYyAqrSPa+MgPfnSvTPuMgK+k0o5kVFWo=
 github.com/lib/pq v1.10.1/go.mod h1:AlVN5x4E4T544tWzH6hKfbfQvm3HdbOxrmggDNAPY9o=
-github.com/mactsouk/restdb v0.0.0-20210510211511-d926f72a9726 h1:FTyAGaMXAruWzVe+zYsz0I1krKTxq26DnLEiFprjC5I=
-github.com/mactsouk/restdb v0.0.0-20210510211511-d926f72a9726/go.mod h1:ijfADIlzIh5sqbZhlyD+K6ms8y2wdKtNtt7au20xkIM=
+github.com/mactsouk/restdb v0.0.0-20210511060155-b9deae0931ce h1:/UTXRLSo/i0fjbJ69kMXLZ3xkxY82IpOpfLdE/7sFCA=
+github.com/mactsouk/restdb v0.0.0-20210511060155-b9deae0931ce/go.mod h1:4ObtBUQrGDK+5dcFvEfXtRJ7BUDAlPKLyMAvWNdCCCw=

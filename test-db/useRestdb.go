@@ -44,9 +44,11 @@ func main() {
 	fmt.Println(db)
 	db.Close()
 
-	db = ConnectPostgres()
-	fmt.Println(db)
-	defer db.Close()
+	err := db.Ping()
+	if err != nil {
+		fmt.Println("Ping:", err)
+		return
+	}
 
 	t := restdb.User{}
 	fmt.Println(t)

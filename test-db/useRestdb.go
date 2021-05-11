@@ -76,13 +76,16 @@ func main() {
 	mtsoukUser := restdb.FindUserUsername(user.Username)
 	fmt.Println("mtsouk: ", mtsoukUser)
 
-	if restdb.DeleteUser(1) {
+	if restdb.DeleteUser(mtsoukUser.ID) {
 		fmt.Println("User Deleted.")
 	} else {
 		fmt.Println("User not Deleted.")
 	}
 
-	if restdb.DeleteUser(1) {
+	mtsoukUser := restdb.FindUserUsername(user.Username)
+	fmt.Println("mtsouk: ", mtsoukUser)
+
+	if restdb.DeleteUser(mtsoukUser.ID) {
 		fmt.Println("User Deleted.")
 	} else {
 		fmt.Println("User not Deleted.")

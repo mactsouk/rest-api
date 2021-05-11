@@ -73,4 +73,19 @@ func main() {
 		fmt.Println("Insert failed!")
 	}
 
+	mtsoukUser := restdb.FindUserUsername(user.Username)
+	fmt.Println("mtsouk: ", mtsoukUser)
+
+	if restdb.DeleteUser(1) {
+		fmt.Println("User Deleted.")
+	} else {
+		fmt.Println("User not Deleted.")
+	}
+
+	if restdb.DeleteUser(1) {
+		fmt.Println("User Deleted.")
+	} else {
+		fmt.Println("User not Deleted.")
+	}
+
 }

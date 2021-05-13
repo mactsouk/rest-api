@@ -186,7 +186,7 @@ func GetAllHandler(rw http.ResponseWriter, r *http.Request) {
 func GetIDHandler(rw http.ResponseWriter, r *http.Request) {
 	log.Println("Serving:", r.URL.Path, "from", r.Host)
 
-	id, ok := mux.Vars(r)["username"]
+	username, ok := mux.Vars(r)["username"]
 	if !ok {
 		log.Println("ID value not set!")
 		rw.WriteHeader(http.StatusNotFound)
@@ -215,13 +215,13 @@ func GetIDHandler(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println("Input user:", user)
-	if !restdb.IsUserValid(user) {
-		log.Println("User", user.Username, "not valid!")
+	if !restdb.IsUserAdmin(user) {
+		log.Println("User", user.Username, "not an admin!")
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	t := restdb.FindUserUsername(user.Username)
+	t := restdb.FindUserUsername(username)
 	Body := "User " + user.Username + " has ID:"
 	fmt.Fprintf(rw, "%s %d\n", Body, t.ID)
 }

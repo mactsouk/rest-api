@@ -4,11 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/mactsouk/restdb"
 )
 
 type User struct {
@@ -65,7 +66,7 @@ func TimeHandler(rw http.ResponseWriter, r *http.Request) {
 // AddHandler is for adding a new user
 func AddHandler(rw http.ResponseWriter, r *http.Request) {
 	log.Println("Serving:", r.URL.Path, "from", r.Host)
-	d, err := ioutil.ReadAll(r.Body)
+	d, err := io.ReadAll(r.Body)
 	if err != nil {
 		rw.WriteHeader(http.StatusBadRequest)
 		log.Println(err)
@@ -88,15 +89,15 @@ func AddHandler(rw http.ResponseWriter, r *http.Request) {
 
 	log.Println(users)
 
-	u := UserPass{users[0].Username, users[0].Password}
-	if !IsUserAdmin(u) {
+	u := restdb.User{User: users[0].Username, Password: users[0].Password}
+	if !restdb.IsUserAdmin(u) {
 		log.Println("Command issued by non-admin user:", u.Username)
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	newUser := User{-1, users[1].Username, users[1].Password, time.Now().Unix(), users[1].Admin, 0}
-	result := AddUser(newUser)
+	newUser := restdb.User{-1, users[1].Username, users[1].Password, time.Now().Unix(), users[1].Admin, 0}
+	result := restdb.InsertUser(newUser)
 	if !result {
 		rw.WriteHeader(http.StatusBadRequest)
 	}
@@ -105,14 +106,14 @@ func AddHandler(rw http.ResponseWriter, r *http.Request) {
 // DeleteHandler is for deleting an existing user + DELETE
 func DeleteHandler(rw http.ResponseWriter, r *http.Request) {
 	log.Println("Serving:", r.URL.Path, "from", r.Host)
-	id, ok := mux.Vars(r)["id"]
+	id, ok := r.Vars(r)["id"]
 	if !ok {
 		log.Println("ID value not set!")
 		rw.WriteHeader(http.StatusNotFound)
 		return
 	}
 
-	var user = UserPass{}
+	var user = restdb.User{}
 	err := user.FromJSON(r.Body)
 	if err != nil {
 		log.Println(err)
@@ -120,7 +121,7 @@ func DeleteHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !IsUserAdmin(user) {
+	if !restdb.IsUserAdmin(user) {
 		log.Println("User", user.Username, "is not admin!")
 		rw.WriteHeader(http.StatusBadRequest)
 		return
@@ -132,10 +133,10 @@ func DeleteHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	t := FindUserID(intID)
+	t := restdb.FindUserID(intID)
 	if t.Username != "" {
 		log.Println("About to delete:", t)
-		deleted := DeleteUser(intID)
+		deleted := restdb.DeleteUser(intID)
 		if deleted {
 			log.Println("User deleted:", id)
 			rw.WriteHeader(http.StatusOK)
@@ -151,7 +152,7 @@ func DeleteHandler(rw http.ResponseWriter, r *http.Request) {
 // GetAllHandler is for getting all data from the user database
 func GetAllHandler(rw http.ResponseWriter, r *http.Request) {
 	log.Println("Serving:", r.URL.Path, "from", r.Host)
-	d, err := ioutil.ReadAll(r.Body)
+	d, err := io.ReadAll(r.Body)
 	if err != nil {
 		rw.WriteHeader(http.StatusBadRequest)
 		log.Println(err)
@@ -164,7 +165,7 @@ func GetAllHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var user = UserPass{}
+	var user = restdb.User{}
 	err = json.Unmarshal(d, &user)
 	if err != nil {
 		log.Println(err)
@@ -172,7 +173,7 @@ func GetAllHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !IsUserValid(user) {
+	if !restdb.IsUserValid(user) {
 		log.Println("User", user, "does not exist!")
 		rw.WriteHeader(http.StatusBadRequest)
 		return
@@ -190,7 +191,7 @@ func GetAllHandler(rw http.ResponseWriter, r *http.Request) {
 func GetIDHandler(rw http.ResponseWriter, r *http.Request) {
 	log.Println("Serving:", r.URL.Path, "from", r.Host)
 
-	d, err := ioutil.ReadAll(r.Body)
+	d, err := io.ReadAll(r.Body)
 	if err != nil {
 		rw.WriteHeader(http.StatusBadRequest)
 		log.Println(err)
@@ -203,7 +204,7 @@ func GetIDHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var user = User{}
+	var user = restdb.User{}
 	err = json.Unmarshal(d, &user)
 	if err != nil {
 		log.Println(err)
@@ -212,13 +213,13 @@ func GetIDHandler(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println("Input user:", user)
-	if !IsUserValid(user) {
+	if !restdb.IsUserValid(user) {
 		log.Println("User", user.Username, "not valid!")
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	t := FindUserUsername(user.Username)
+	t := restdb.FindUserUsername(user.Username)
 	Body := "User " + user.Username + " has ID:"
 	fmt.Fprintf(rw, "%s %d\n", Body, t.ID)
 }
@@ -226,7 +227,7 @@ func GetIDHandler(rw http.ResponseWriter, r *http.Request) {
 // GetUserDataHandler + GET returns the full record of a user
 func GetUserDataHandler(rw http.ResponseWriter, r *http.Request) {
 	log.Println("Serving:", r.URL.Path, "from", r.Host)
-	id, ok := mux.Vars(r)["id"]
+	id, ok := rMux.Vars(r)["id"]
 	if !ok {
 		log.Println("ID value not set!")
 		rw.WriteHeader(http.StatusBadRequest)
@@ -240,7 +241,7 @@ func GetUserDataHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	t := FindUserID(intID)
+	t := restdb.FindUserID(intID)
 	if t.Username != "" {
 		err := t.ToJSON(rw)
 		if err != nil {
@@ -258,7 +259,7 @@ func GetUserDataHandler(rw http.ResponseWriter, r *http.Request) {
 // UpdateHandler is for updating the data of an existing user + PUT
 func UpdateHandler(rw http.ResponseWriter, r *http.Request) {
 	log.Println("Serving:", r.URL.Path, "from", r.Host)
-	d, err := ioutil.ReadAll(r.Body)
+	d, err := io.ReadAll(r.Body)
 	if err != nil {
 		rw.WriteHeader(http.StatusBadRequest)
 		log.Println(err)
@@ -302,7 +303,7 @@ func UpdateHandler(rw http.ResponseWriter, r *http.Request) {
 // And changing the Active field to true
 func LoginHandler(rw http.ResponseWriter, r *http.Request) {
 	log.Println("Serving:", r.URL.Path, "from", r.Host)
-	d, err := ioutil.ReadAll(r.Body)
+	d, err := io.ReadAll(r.Body)
 	if err != nil {
 		rw.WriteHeader(http.StatusBadRequest)
 		log.Println(err)
@@ -349,7 +350,7 @@ func LoginHandler(rw http.ResponseWriter, r *http.Request) {
 func LogoutHandler(rw http.ResponseWriter, r *http.Request) {
 	log.Println("Serving:", r.URL.Path, "from", r.Host)
 
-	d, err := ioutil.ReadAll(r.Body)
+	d, err := io.ReadAll(r.Body)
 	if err != nil {
 		rw.WriteHeader(http.StatusBadRequest)
 		log.Println(err)
@@ -362,7 +363,7 @@ func LogoutHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var user = UserPass{}
+	var user = User{}
 	err = json.Unmarshal(d, &user)
 	if err != nil {
 		log.Println(err)
@@ -370,7 +371,7 @@ func LogoutHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !IsUserValid(user) {
+	if !restdb.IsUserValid(user) {
 		log.Println("User", user.Username, "exists!")
 		rw.WriteHeader(http.StatusBadRequest)
 		return

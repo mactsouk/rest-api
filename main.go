@@ -10,6 +10,9 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Create a new ServeMux using Gorilla
+var rMux = mux.NewRouter()
+
 // PORT is where the web server listens to
 var PORT = ":1234"
 
@@ -19,28 +22,25 @@ func main() {
 		PORT = ":" + arguments[1]
 	}
 
-	// Create a new ServeMux using Gorilla
-	mux := mux.NewRouter()
-
 	s := http.Server{
 		Addr:         PORT,
-		Handler:      mux,
+		Handler:      rMux,
 		ErrorLog:     nil,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,
 		IdleTimeout:  10 * time.Second,
 	}
 
-	mux.NotFoundHandler = http.HandlerFunc(DefaultHandler)
+	rMux.NotFoundHandler = http.HandlerFunc(DefaultHandler)
 
 	notAllowed := notAllowedHandler{}
-	mux.MethodNotAllowedHandler = notAllowed
+	rMux.MethodNotAllowedHandler = notAllowed
 
-	mux.HandleFunc("/time", TimeHandler)
+	rMux.HandleFunc("/time", TimeHandler)
 
 	// Define Handler Functions
 	// Register GET
-	getMux := mux.Methods(http.MethodGet).Subrouter()
+	getMux := rMux.Methods(http.MethodGet).Subrouter()
 
 	getMux.HandleFunc("/getall", GetAllHandler)
 	getMux.HandleFunc("/getid/username", GetIDHandler)
@@ -49,19 +49,19 @@ func main() {
 
 	// Register PUT
 	// Update User
-	putMux := mux.Methods(http.MethodPut).Subrouter()
+	putMux := rMux.Methods(http.MethodPut).Subrouter()
 	putMux.HandleFunc("/update", UpdateHandler)
 
 	// Register POST
 	// Add User + Login + Logout
-	postMux := mux.Methods(http.MethodPost).Subrouter()
+	postMux := rMux.Methods(http.MethodPost).Subrouter()
 	postMux.HandleFunc("/add", AddHandler)
 	postMux.HandleFunc("/login", LoginHandler)
 	postMux.HandleFunc("/logout", LogoutHandler)
 
 	// Register DELETE
 	// Delete User
-	deleteMux := mux.Methods(http.MethodDelete).Subrouter()
+	deleteMux := rMux.Methods(http.MethodDelete).Subrouter()
 	deleteMux.HandleFunc("/username/{id:[0-9]+}", handlers.DeleteHandler)
 
 	go func() {

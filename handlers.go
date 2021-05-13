@@ -222,8 +222,14 @@ func GetIDHandler(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	t := restdb.FindUserUsername(username)
-	Body := "User " + user.Username + " has ID:"
-	fmt.Fprintf(rw, "%s %d\n", Body, t.ID)
+	if t.ID != 0 {
+		Body := "User " + user.Username + " has ID:"
+		fmt.Fprintf(rw, "%s %d\n", Body, t.ID)
+	} else {
+		rw.WriteHeader(http.StatusNotFound)
+		Body := "User " + user.Username + "not found"
+		fmt.Fprintf(rw, "%s \n", Body)
+	}
 }
 
 // GetUserDataHandler + GET returns the full record of a user

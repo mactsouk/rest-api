@@ -1,0 +1,6 @@
+github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
+github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
+github.com/lib/pq v1.10.1 h1:6VXZrLU0jHBYyAqrSPa+MgPfnSvTPuMgK+k0o5kVFWo=
+github.com/lib/pq v1.10.1/go.mod h1:AlVN5x4E4T544tWzH6hKfbfQvm3HdbOxrmggDNAPY9o=
+github.com/mactsouk/restdb v0.0.0-20210513090651-5ffea9260002 h1:JACksHh3xEFEbGoJfAlwkFjZzosZN6aFmiW4YJRqGjY=
+github.com/mactsouk/restdb v0.0.0-20210513090651-5ffea9260002/go.mod h1:ijfADIlzIh5sqbZhlyD+K6ms8y2wdKtNtt7au20xkIM=

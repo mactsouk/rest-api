@@ -250,18 +250,19 @@ func GetUserDataHandler(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	t := restdb.FindUserID(intID)
-	if t.Username != "" {
+	if t.ID != 0 {
 		err := t.ToJSON(rw)
 		if err != nil {
 			rw.WriteHeader(http.StatusBadRequest)
 			log.Println(err)
 			return
 		}
-	} else {
-		log.Println("User not found:", id)
-		rw.WriteHeader(http.StatusBadRequest)
+		rw.WriteHeader(http.StatusOK)
 		return
 	}
+
+	log.Println("User not found:", id)
+	rw.WriteHeader(http.StatusBadRequest)
 }
 
 // UpdateHandler is for updating the data of an existing user + PUT

@@ -79,7 +79,7 @@ func AddHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var users = []Input{}
+	var user = restdb.User{}
 	err = json.Unmarshal(d, &users)
 	if err != nil {
 		log.Println(err)
@@ -89,7 +89,7 @@ func AddHandler(rw http.ResponseWriter, r *http.Request) {
 
 	log.Println(users)
 
-	u := restdb.User{User: users[0].Username, Password: users[0].Password}
+	u := restdb.User{User: user.Username, Password: user.Password}
 	if !restdb.IsUserAdmin(u) {
 		log.Println("Command issued by non-admin user:", u.Username)
 		rw.WriteHeader(http.StatusBadRequest)
@@ -316,7 +316,7 @@ func LoginHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var user = UserPass{}
+	var user = restdb.User{}
 	err = json.Unmarshal(d, &user)
 	if err != nil {
 		log.Println(err)
@@ -326,18 +326,18 @@ func LoginHandler(rw http.ResponseWriter, r *http.Request) {
 
 	log.Println("Input user:", user)
 
-	if !IsUserValid(user) {
+	if !restdb.IsUserValid(user) {
 		log.Println("User", user.Username, "not valid!")
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	t := FindUserUsername(user.Username)
+	t := restdb.FindUserUsername(user.Username)
 	log.Println("Logging in:", t)
 
 	t.LastLogin = time.Now().Unix()
 	t.Active = 1
-	if UpdateUser(t) {
+	if restdb.UpdateUser(t) {
 		log.Println("User updated:", t)
 	} else {
 		log.Println("Update failed:", t)

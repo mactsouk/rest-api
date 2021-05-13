@@ -43,7 +43,7 @@ func main() {
 	getMux := rMux.Methods(http.MethodGet).Subrouter()
 
 	getMux.HandleFunc("/getall", GetAllHandler)
-	getMux.HandleFunc("/getid/username", GetIDHandler)
+	getMux.HandleFunc("/getid/{username}", GetIDHandler)
 	getMux.HandleFunc("/logged", LoggedUsersHandler)
 	getMux.HandleFunc("/username/{id:[0-9]+}", GetUserDataHandler)
 

@@ -184,7 +184,7 @@ func GetAllHandler(rw http.ResponseWriter, r *http.Request) {
 
 // GetIDHandler returns the ID of an existing user
 func GetIDHandler(rw http.ResponseWriter, r *http.Request) {
-	log.Println("Serving:", r.URL.Path, "from", r.Host)
+	log.Println("GetIDHandler Serving:", r.URL.Path, "from", r.Host)
 
 	username, ok := mux.Vars(r)["username"]
 	if !ok {

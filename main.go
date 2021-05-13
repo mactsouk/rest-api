@@ -62,7 +62,7 @@ func main() {
 	// Register DELETE
 	// Delete User
 	deleteMux := rMux.Methods(http.MethodDelete).Subrouter()
-	deleteMux.HandleFunc("/username/{id:[0-9]+}", handlers.DeleteHandler)
+	deleteMux.HandleFunc("/username/{id:[0-9]+}", DeleteHandler)
 
 	go func() {
 		log.Println("Listening to", PORT)

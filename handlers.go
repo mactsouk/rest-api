@@ -35,7 +35,7 @@ func (h notAllowedHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 }
 
 func DefaultHandler(rw http.ResponseWriter, r *http.Request) {
-	log.Println("Serving:", r.URL.Path, "from", r.Host, "with method", r.Method)
+	log.Println("DefaultHandler Serving:", r.URL.Path, "from", r.Host, "with method", r.Method)
 	rw.WriteHeader(http.StatusNotFound)
 	Body := r.URL.Path + " is not supported. Thanks for visiting!\n"
 	fmt.Fprintf(rw, "%s", Body)
@@ -51,7 +51,7 @@ func MethodNotAllowedHandler(rw http.ResponseWriter, r *http.Request) {
 
 // TimeHandler is for handling /time
 func TimeHandler(rw http.ResponseWriter, r *http.Request) {
-	log.Println("Serving:", r.URL.Path, "from", r.Host)
+	log.Println("TimeHandler Serving:", r.URL.Path, "from", r.Host)
 	rw.WriteHeader(http.StatusOK)
 	t := time.Now().Format(time.RFC1123)
 	Body := "The current time is: " + t + "\n"
@@ -60,7 +60,7 @@ func TimeHandler(rw http.ResponseWriter, r *http.Request) {
 
 // AddHandler is for adding a new user
 func AddHandler(rw http.ResponseWriter, r *http.Request) {
-	log.Println("Serving:", r.URL.Path, "from", r.Host)
+	log.Println("AddHandler Serving:", r.URL.Path, "from", r.Host)
 	d, err := io.ReadAll(r.Body)
 	if err != nil {
 		rw.WriteHeader(http.StatusBadRequest)
@@ -100,7 +100,7 @@ func AddHandler(rw http.ResponseWriter, r *http.Request) {
 
 // DeleteHandler is for deleting an existing user + DELETE
 func DeleteHandler(rw http.ResponseWriter, r *http.Request) {
-	log.Println("Serving:", r.URL.Path, "from", r.Host)
+	log.Println("DeleteHandler Serving:", r.URL.Path, "from", r.Host)
 	id, ok := mux.Vars(r)["id"]
 	if !ok {
 		log.Println("ID value not set!")
@@ -146,7 +146,7 @@ func DeleteHandler(rw http.ResponseWriter, r *http.Request) {
 
 // GetAllHandler is for getting all data from the user database
 func GetAllHandler(rw http.ResponseWriter, r *http.Request) {
-	log.Println("Serving:", r.URL.Path, "from", r.Host)
+	log.Println("GetAllHandler Serving:", r.URL.Path, "from", r.Host)
 	d, err := io.ReadAll(r.Body)
 	if err != nil {
 		rw.WriteHeader(http.StatusBadRequest)
@@ -234,7 +234,7 @@ func GetIDHandler(rw http.ResponseWriter, r *http.Request) {
 
 // GetUserDataHandler + GET returns the full record of a user
 func GetUserDataHandler(rw http.ResponseWriter, r *http.Request) {
-	log.Println("Serving:", r.URL.Path, "from", r.Host)
+	log.Println("GetUserDataHandler Serving:", r.URL.Path, "from", r.Host)
 	id, ok := mux.Vars(r)["id"]
 	if !ok {
 		log.Println("ID value not set!")
@@ -266,7 +266,7 @@ func GetUserDataHandler(rw http.ResponseWriter, r *http.Request) {
 
 // UpdateHandler is for updating the data of an existing user + PUT
 func UpdateHandler(rw http.ResponseWriter, r *http.Request) {
-	log.Println("Serving:", r.URL.Path, "from", r.Host)
+	log.Println("UpdateHandler Serving:", r.URL.Path, "from", r.Host)
 	d, err := io.ReadAll(r.Body)
 	if err != nil {
 		rw.WriteHeader(http.StatusBadRequest)
@@ -310,7 +310,7 @@ func UpdateHandler(rw http.ResponseWriter, r *http.Request) {
 // LoginHandler is for updating the LastLogin time of a user
 // And changing the Active field to true
 func LoginHandler(rw http.ResponseWriter, r *http.Request) {
-	log.Println("Serving:", r.URL.Path, "from", r.Host)
+	log.Println("LoginHandler Serving:", r.URL.Path, "from", r.Host)
 	d, err := io.ReadAll(r.Body)
 	if err != nil {
 		rw.WriteHeader(http.StatusBadRequest)
@@ -356,7 +356,7 @@ func LoginHandler(rw http.ResponseWriter, r *http.Request) {
 // LogoutHandler is for logging out a user
 // And changing the Active field to false
 func LogoutHandler(rw http.ResponseWriter, r *http.Request) {
-	log.Println("Serving:", r.URL.Path, "from", r.Host)
+	log.Println("LogoutHandler Serving:", r.URL.Path, "from", r.Host)
 
 	d, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -398,7 +398,7 @@ func LogoutHandler(rw http.ResponseWriter, r *http.Request) {
 
 // LoggedUsersHandler returns the list of currently logged in users
 func LoggedUsersHandler(rw http.ResponseWriter, r *http.Request) {
-	log.Println("Serving:", r.URL.Path, "from", r.Host)
+	log.Println("LoggedUsersHandler Serving:", r.URL.Path, "from", r.Host)
 	var user = restdb.User{}
 	err := user.FromJSON(r.Body)
 

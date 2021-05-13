@@ -36,6 +36,34 @@ func main() {
 	notAllowed := notAllowedHandler{}
 	mux.MethodNotAllowedHandler = notAllowed
 
+	mux.HandleFunc("/time", TimeHandler)
+
+	// Define Handler Functions
+	// Register GET
+	getMux := mux.Methods(http.MethodGet).Subrouter()
+
+	getMux.HandleFunc("/getall", GetAllHandler)
+	getMux.HandleFunc("/getid/username", GetIDHandler)
+	getMux.HandleFunc("/logged", LoggedUsersHandler)
+	getMux.HandleFunc("/username/{id:[0-9]+}", GetUserDataHandler)
+
+	// Register PUT
+	// Update User
+	putMux := mux.Methods(http.MethodPut).Subrouter()
+	putMux.HandleFunc("/update", UpdateHandler)
+
+	// Register POST
+	// Add User + Login + Logout
+	postMux := mux.Methods(http.MethodPost).Subrouter()
+	postMux.HandleFunc("/add", AddHandler)
+	postMux.HandleFunc("/login", LoginHandler)
+	postMux.HandleFunc("/logout", LogoutHandler)
+
+	// Register DELETE
+	// Delete User
+	deleteMux := mux.Methods(http.MethodDelete).Subrouter()
+	deleteMux.HandleFunc("/username/{id:[0-9]+}", handlers.DeleteHandler)
+
 	go func() {
 		log.Println("Listening to", PORT)
 		err := s.ListenAndServe()

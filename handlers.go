@@ -186,6 +186,13 @@ func GetAllHandler(rw http.ResponseWriter, r *http.Request) {
 func GetIDHandler(rw http.ResponseWriter, r *http.Request) {
 	log.Println("Serving:", r.URL.Path, "from", r.Host)
 
+	id, ok := mux.Vars(r)["username"]
+	if !ok {
+		log.Println("ID value not set!")
+		rw.WriteHeader(http.StatusNotFound)
+		return
+	}
+
 	d, err := io.ReadAll(r.Body)
 	if err != nil {
 		rw.WriteHeader(http.StatusBadRequest)

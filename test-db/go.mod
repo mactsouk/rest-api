@@ -4,5 +4,5 @@ go 1.16
 
 require (
 	github.com/lib/pq v1.10.1
-	github.com/mactsouk/restdb v0.0.0-20210511083351-11512f394e06
+	github.com/mactsouk/restdb v0.0.0-20210513090651-5ffea9260002
 )

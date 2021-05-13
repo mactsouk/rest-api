@@ -257,7 +257,6 @@ func GetUserDataHandler(rw http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 			return
 		}
-		rw.WriteHeader(http.StatusOK)
 		return
 	}
 

@@ -5,7 +5,6 @@ import (
 	"log"
 	"time"
 
-	_ "github.com/lib/pq"
 	"github.com/mactsouk/restdb"
 )
 
@@ -96,5 +95,4 @@ func main() {
 	} else {
 		fmt.Println("User not Deleted.")
 	}
-
 }

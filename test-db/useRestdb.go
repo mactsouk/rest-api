@@ -39,7 +39,6 @@ func main() {
 
 	t := restdb.User{}
 	fmt.Println(t)
-
 	rows, err := db.Query(`SELECT "username" FROM "users"`)
 	if err != nil {
 		fmt.Println(err)
@@ -49,7 +48,6 @@ func main() {
 	defer rows.Close()
 	for rows.Next() {
 		var username string
-
 		err = rows.Scan(&username)
 		if err != nil {
 			fmt.Println(err)

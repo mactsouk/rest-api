@@ -41,7 +41,7 @@ func DefaultHandler(rw http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(rw, "%s", Body)
 }
 
-// MethodNotAllowedHandler is executed when the method is incorrect
+// MethodNotAllowedHandler is executed when the HTTP method is incorrect
 func MethodNotAllowedHandler(rw http.ResponseWriter, r *http.Request) {
 	log.Println("Serving:", r.URL.Path, "from", r.Host, "with method", r.Method)
 	rw.WriteHeader(http.StatusNotFound)
@@ -49,7 +49,7 @@ func MethodNotAllowedHandler(rw http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(rw, "%s", Body)
 }
 
-// TimeHandler is for handling /time
+// TimeHandler is for handling /time – it works with plain text
 func TimeHandler(rw http.ResponseWriter, r *http.Request) {
 	log.Println("TimeHandler Serving:", r.URL.Path, "from", r.Host)
 	rw.WriteHeader(http.StatusOK)
@@ -74,6 +74,9 @@ func AddHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// We read two structures as an array:
+	// 1. The user issuing the command
+	// 2. The user to be added
 	var users = []restdb.User{}
 	err = json.Unmarshal(d, &users)
 	if err != nil {
@@ -84,15 +87,13 @@ func AddHandler(rw http.ResponseWriter, r *http.Request) {
 
 	log.Println(users)
 
-	u := restdb.User{Username: users[0].Username, Password: users[0].Password}
-	if !restdb.IsUserAdmin(u) {
-		log.Println("Command issued by non-admin user:", u.Username)
+	if !restdb.IsUserAdmin(users[0]) {
+		log.Println("Command issued by non-admin user:", users[0].Username)
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	newUser := restdb.User{-1, users[1].Username, users[1].Password, time.Now().Unix(), users[1].Admin, 0}
-	result := restdb.InsertUser(newUser)
+	result := restdb.InsertUser(users[1])
 	if !result {
 		rw.WriteHeader(http.StatusBadRequest)
 	}
@@ -101,6 +102,8 @@ func AddHandler(rw http.ResponseWriter, r *http.Request) {
 // DeleteHandler is for deleting an existing user + DELETE
 func DeleteHandler(rw http.ResponseWriter, r *http.Request) {
 	log.Println("DeleteHandler Serving:", r.URL.Path, "from", r.Host)
+
+	// Get the ID of the user to be deleted
 	id, ok := mux.Vars(r)["id"]
 	if !ok {
 		log.Println("ID value not set!")
@@ -137,7 +140,7 @@ func DeleteHandler(rw http.ResponseWriter, r *http.Request) {
 			rw.WriteHeader(http.StatusOK)
 			return
 		} else {
-			log.Println("Cannot delete user:", id)
+			log.Println("User ID not found:", id)
 			rw.WriteHeader(http.StatusNotFound)
 		}
 	}
@@ -168,8 +171,8 @@ func GetAllHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !restdb.IsUserValid(user) {
-		log.Println("User", user, "does not exist!")
+	if !restdb.IsUserAdmin(user) {
+		log.Println("User", user, "is not an admin!")
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -255,7 +258,6 @@ func GetUserDataHandler(rw http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			rw.WriteHeader(http.StatusBadRequest)
 			log.Println(err)
-			return
 		}
 		return
 	}
@@ -288,9 +290,8 @@ func UpdateHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u := restdb.User{Username: users[0].Username, Password: users[0].Password}
-	if !restdb.IsUserAdmin(u) {
-		log.Println("Command issued by non-admin user:", u.Username)
+	if !restdb.IsUserAdmin(users[0]) {
+		log.Println("Command issued by non-admin user:", users[0].Username)
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -304,7 +305,11 @@ func UpdateHandler(rw http.ResponseWriter, r *http.Request) {
 	if !restdb.UpdateUser(t) {
 		log.Println("Update failed:", t)
 		rw.WriteHeader(http.StatusBadRequest)
+		return
 	}
+
+	log.Println("Update successful:", t)
+	rw.WriteHeader(http.StatusOK)
 }
 
 // LoginHandler is for updating the LastLogin time of a user
@@ -347,6 +352,7 @@ func LoginHandler(rw http.ResponseWriter, r *http.Request) {
 	t.Active = 1
 	if restdb.UpdateUser(t) {
 		log.Println("User updated:", t)
+		rw.WriteHeader(http.StatusOK)
 	} else {
 		log.Println("Update failed:", t)
 		rw.WriteHeader(http.StatusBadRequest)
@@ -390,13 +396,14 @@ func LogoutHandler(rw http.ResponseWriter, r *http.Request) {
 	t.Active = 0
 	if restdb.UpdateUser(t) {
 		log.Println("User updated:", t)
+		rw.WriteHeader(http.StatusOK)
 	} else {
 		log.Println("Update failed:", t)
 		rw.WriteHeader(http.StatusBadRequest)
 	}
 }
 
-// LoggedUsersHandler returns the list of currently logged in users
+// LoggedUsersHandler returns the list of all logged in users
 func LoggedUsersHandler(rw http.ResponseWriter, r *http.Request) {
 	log.Println("LoggedUsersHandler Serving:", r.URL.Path, "from", r.Host)
 	var user = restdb.User{}

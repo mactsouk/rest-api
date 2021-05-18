@@ -226,12 +226,14 @@ func GetIDHandler(rw http.ResponseWriter, r *http.Request) {
 
 	t := restdb.FindUserUsername(username)
 	if t.ID != 0 {
-		Body := "User " + user.Username + " has ID:"
-		fmt.Fprintf(rw, "%s %d\n", Body, t.ID)
+		err := t.ToJSON(rw)
+		if err != nil {
+			rw.WriteHeader(http.StatusBadRequest)
+			log.Println(err)
+		}
 	} else {
 		rw.WriteHeader(http.StatusNotFound)
-		Body := "User " + user.Username + "not found"
-		fmt.Fprintf(rw, "%s \n", Body)
+		log.Println("User " + user.Username + "not found")
 	}
 }
 

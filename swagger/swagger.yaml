@@ -1,0 +1,125 @@
+basePath: /
+consumes:
+- application/json
+definitions:
+  User:
+    description: User defines the structure for a Full User Record
+    properties:
+      active:
+        description: Is the User Logged In or Not
+        format: int64
+        type: integer
+        x-go-name: Active
+      admin:
+        description: Is the User Admin or not
+        format: int64
+        type: integer
+        x-go-name: Admin
+      id:
+        description: |-
+          The ID for the User
+          in: body
+        format: int64
+        minimum: 1
+        type: integer
+        x-go-name: ID
+      lastlogin:
+        description: The Last Login time of the User
+        format: int64
+        minimum: 0
+        type: integer
+        x-go-name: LastLogin
+      password:
+        description: The Password of the User
+        type: string
+        x-go-name: Password
+      user:
+        description: |-
+          The Username of the User
+          in: body
+        type: string
+        x-go-name: Username
+    required:
+    - user
+    - password
+    - lastlogin
+    - admin
+    - active
+    type: object
+    x-go-package: github.com/mactsouk/rest-api/swagger
+info:
+  description: Documentation for REST API
+  title: For the RESTful Server
+  version: 1.0.5
+paths:
+  /:
+    delete:
+      description: Default Handler for everything that is not a match
+      operationId: EMPTY
+      responses:
+        "404":
+          $ref: '#/responses/ErrorMessage'
+      tags:
+      - Anything
+  /*:
+    get:
+      description: Default Handler for endpoints used with incorrect HTTP request
+        method
+      operationId: "NULL"
+      responses:
+        "404":
+          $ref: '#/responses/ErrorMessage'
+  /add:
+    post:
+      description: Create a new user
+      operationId: User
+      responses:
+        "200":
+          $ref: '#/responses/OK'
+        "400":
+          $ref: '#/responses/BadRequest'
+      tags:
+      - createUser
+  /getid:
+    get:
+      description: Returns the ID of a user given their username
+      operationId: User
+      responses:
+        "200":
+          $ref: '#/responses/OK'
+        "400":
+          $ref: '#/responses/BadRequest'
+      tags:
+      - Username-Password
+  /login:
+    post:
+      description: Login an existing user
+      operationId: User
+      responses:
+        "200":
+          $ref: '#/responses/OK'
+        "400":
+          $ref: '#/responses/BadRequest'
+      tags:
+      - Username-Password
+  /time:
+    get:
+      description: Return current time
+      operationId: "NULL"
+      responses:
+        "200":
+          $ref: '#/responses/OK'
+      tags:
+      - time
+produces:
+- application/json
+responses:
+  BadRequest:
+    description: Generic BadRequest message returned as an HTTP Status Code
+  ErrorMessage:
+    description: Generic error message returned as an HTTP Status Code
+  OK:
+    description: Generic OK message returned as an HTTP Status Code
+schemes:
+- http
+swagger: "2.0"

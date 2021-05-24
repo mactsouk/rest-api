@@ -1,10 +1,10 @@
-// Package main For the RESTful Server
+// Package handlers for the RESTful Server
 //
 // Documentation for REST API
 //
 //	Schemes: http
 //	BasePath: /
-//	Version: 1.0.5
+//	Version: 1.0.7
 //
 //	Consumes:
 //	- application/json
@@ -13,25 +13,19 @@
 //	- application/json
 //
 // swagger:meta
-package main
+package handlers
 
 import (
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
-	"time"
-
-	"github.com/gorilla/mux"
 )
 
 // @termsOfService http://swagger.io/terms/
 
-// User user
-//
 // User defines the structure for a Full User Record
 //
-// swagger:model user
+// swagger:model
 type User struct {
 	// The ID for the user
 	// in: body
@@ -168,29 +162,4 @@ type BadRequest struct {
 	// Description of the situation
 	// in: body
 	Body int
-}
-
-var PORT = ":4321"
-
-func main() {
-	mux := mux.NewRouter()
-
-	s := http.Server{
-		Addr:         PORT,
-		Handler:      mux,
-		ErrorLog:     nil,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 5 * time.Second,
-		IdleTimeout:  10 * time.Second,
-	}
-
-	mux.Handle("/docs", s)
-	mux.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
-
-	log.Println("Listening to", PORT)
-	err := s.ListenAndServe()
-	if err != nil {
-		log.Printf("Error starting server: %s\n", err)
-		return
-	}
 }

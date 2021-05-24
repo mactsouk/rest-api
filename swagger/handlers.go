@@ -17,33 +17,33 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/mactsouk/restdb"
 )
 
 // @termsOfService http://swagger.io/terms/
 
 // User defines the structure for a Full User Record
-// swagger:model User
+//
+// swagger:model user
 type User struct {
-	// The ID for the User
+
+	// The ID for the user
 	// in: body
 	//
 	// required: false
 	// min: 1
 	ID int `json:"id"`
-	// The Username of the User
+	// The Username of the user
 	// in: body
 	//
 	// required: true
-	Username string `json:"user"`
-	// The Password of the User
+	Username string `json:"username"`
+	// The Password of the user
 	//
 	// required: true
 	Password string `json:"password"`
@@ -82,13 +82,10 @@ func (h notAllowedHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 // DefaultHandler is for handling everything that is not a match
 func DefaultHandler(rw http.ResponseWriter, r *http.Request) {
-	log.Println("DefaultHandler Serving:", r.URL.Path, "from", r.Host, "with method", r.Method)
-	rw.WriteHeader(http.StatusNotFound)
-	Body := r.URL.Path + " is not supported. Thanks for visiting!\n"
-	fmt.Fprintf(rw, "%s", Body)
+
 }
 
-// swagger:route GET /* NULL
+// swagger:route GET /*
 // Default Handler for endpoints used with incorrect HTTP request method
 //
 // responses:
@@ -96,13 +93,10 @@ func DefaultHandler(rw http.ResponseWriter, r *http.Request) {
 
 // MethodNotAllowedHandler is executed when the HTTP method is incorrect
 func MethodNotAllowedHandler(rw http.ResponseWriter, r *http.Request) {
-	log.Println("Serving:", r.URL.Path, "from", r.Host, "with method", r.Method)
-	rw.WriteHeader(http.StatusNotFound)
-	Body := "Method not allowed!\n"
-	fmt.Fprintf(rw, "%s", Body)
+
 }
 
-// swagger:route GET /time time NULL
+// swagger:route GET /time time
 // Return current time
 //
 // responses:
@@ -110,63 +104,21 @@ func MethodNotAllowedHandler(rw http.ResponseWriter, r *http.Request) {
 
 // TimeHandler is for handling /time – it works with plain text
 func TimeHandler(rw http.ResponseWriter, r *http.Request) {
-	log.Println("TimeHandler Serving:", r.URL.Path, "from", r.Host)
-	rw.WriteHeader(http.StatusOK)
-	t := time.Now().Format(time.RFC1123)
-	Body := "The current time is: " + t + "\n"
-	fmt.Fprintf(rw, "%s", Body)
 }
 
-// swagger:route POST /add createUser User
-// Create a new user
+// swagger:route POST /add User createUser
+// Create a new User
 //
 // responses:
 //	200: OK
 //  400: BadRequest
 
-// AddHandler is for adding a new user
+// AddHandler is for adding a new User
 func AddHandler(rw http.ResponseWriter, r *http.Request) {
-	log.Println("AddHandler Serving:", r.URL.Path, "from", r.Host)
-	d, err := io.ReadAll(r.Body)
-	if err != nil {
-		rw.WriteHeader(http.StatusBadRequest)
-		log.Println(err)
-		return
-	}
-
-	if len(d) == 0 {
-		rw.WriteHeader(http.StatusBadRequest)
-		log.Println("No input!")
-		return
-	}
-
-	// We read two structures as an array:
-	// 1. The user issuing the command
-	// 2. The user to be added
-	var users = []restdb.User{}
-	err = json.Unmarshal(d, &users)
-	if err != nil {
-		log.Println(err)
-		rw.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	log.Println(users)
-
-	if !restdb.IsUserAdmin(users[0]) {
-		log.Println("Command issued by non-admin user:", users[0].Username)
-		rw.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	result := restdb.InsertUser(users[1])
-	if !result {
-		rw.WriteHeader(http.StatusBadRequest)
-	}
 }
 
-// swagger:route GET /getid Username-Password User
-// Returns the ID of a user given their username
+// swagger:route GET /getid User getUserInfo
+// Returns the ID of a User given their username
 //
 // responses:
 //	200: OK
@@ -174,57 +126,9 @@ func AddHandler(rw http.ResponseWriter, r *http.Request) {
 
 // GetIDHandler returns the ID of an existing user
 func GetIDHandler(rw http.ResponseWriter, r *http.Request) {
-	log.Println("GetIDHandler Serving:", r.URL.Path, "from", r.Host)
-
-	username, ok := mux.Vars(r)["username"]
-	if !ok {
-		log.Println("ID value not set!")
-		rw.WriteHeader(http.StatusNotFound)
-		return
-	}
-
-	d, err := io.ReadAll(r.Body)
-	if err != nil {
-		rw.WriteHeader(http.StatusBadRequest)
-		log.Println(err)
-		return
-	}
-
-	if len(d) == 0 {
-		rw.WriteHeader(http.StatusBadRequest)
-		log.Println("No input!")
-		return
-	}
-
-	var user = restdb.User{}
-	err = json.Unmarshal(d, &user)
-	if err != nil {
-		log.Println(err)
-		rw.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	log.Println("Input user:", user)
-	if !restdb.IsUserAdmin(user) {
-		log.Println("User", user.Username, "not an admin!")
-		rw.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	t := restdb.FindUserUsername(username)
-	if t.ID != 0 {
-		err := t.ToJSON(rw)
-		if err != nil {
-			rw.WriteHeader(http.StatusBadRequest)
-			log.Println(err)
-		}
-	} else {
-		rw.WriteHeader(http.StatusNotFound)
-		log.Println("User " + user.Username + "not found")
-	}
 }
 
-// swagger:route POST /login Username-Password User
+// swagger:route POST /login User getLoginInfo
 // Login an existing user
 //
 // responses:
@@ -234,48 +138,6 @@ func GetIDHandler(rw http.ResponseWriter, r *http.Request) {
 // LoginHandler is for updating the LastLogin time of a user
 // And changing the Active field to true
 func LoginHandler(rw http.ResponseWriter, r *http.Request) {
-	log.Println("LoginHandler Serving:", r.URL.Path, "from", r.Host)
-	d, err := io.ReadAll(r.Body)
-	if err != nil {
-		rw.WriteHeader(http.StatusBadRequest)
-		log.Println(err)
-		return
-	}
-
-	if len(d) == 0 {
-		rw.WriteHeader(http.StatusBadRequest)
-		log.Println("No input!")
-		return
-	}
-
-	var user = restdb.User{}
-	err = json.Unmarshal(d, &user)
-	if err != nil {
-		log.Println(err)
-		rw.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	log.Println("Input user:", user)
-
-	if !restdb.IsUserValid(user) {
-		log.Println("User", user.Username, "not valid!")
-		rw.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	t := restdb.FindUserUsername(user.Username)
-	log.Println("Logging in:", t)
-
-	t.LastLogin = time.Now().Unix()
-	t.Active = 1
-	if restdb.UpdateUser(t) {
-		log.Println("User updated:", t)
-		rw.WriteHeader(http.StatusOK)
-	} else {
-		log.Println("Update failed:", t)
-		rw.WriteHeader(http.StatusBadRequest)
-	}
 }
 
 // Generic OK message returned as an HTTP Status Code
@@ -300,4 +162,29 @@ type BadRequest struct {
 	// Description of the situation
 	// in: body
 	Body int
+}
+
+var PORT = ":4321"
+
+func main() {
+	mux := mux.NewRouter()
+
+	s := http.Server{
+		Addr:         PORT,
+		Handler:      mux,
+		ErrorLog:     nil,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 5 * time.Second,
+		IdleTimeout:  10 * time.Second,
+	}
+
+	mux.Handle("/docs", s)
+	mux.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
+
+	log.Println("Listening to", PORT)
+	err := s.ListenAndServe()
+	if err != nil {
+		log.Printf("Error starting server: %s\n", err)
+		return
+	}
 }

@@ -2,7 +2,7 @@ basePath: /
 consumes:
 - application/json
 definitions:
-  User:
+  user:
     description: User defines the structure for a Full User Record
     properties:
       active:
@@ -17,7 +17,7 @@ definitions:
         x-go-name: Admin
       id:
         description: |-
-          The ID for the User
+          The ID for the user
           in: body
         format: int64
         minimum: 1
@@ -30,22 +30,23 @@ definitions:
         type: integer
         x-go-name: LastLogin
       password:
-        description: The Password of the User
+        description: The Password of the user
         type: string
         x-go-name: Password
-      user:
+      username:
         description: |-
-          The Username of the User
+          The Username of the user
           in: body
         type: string
         x-go-name: Username
     required:
-    - user
+    - username
     - password
     - lastlogin
     - admin
     - active
     type: object
+    x-go-name: User
     x-go-package: github.com/mactsouk/rest-api/swagger
 info:
   description: Documentation for REST API
@@ -61,56 +62,46 @@ paths:
           $ref: '#/responses/ErrorMessage'
       tags:
       - Anything
-  /*:
-    get:
-      description: Default Handler for endpoints used with incorrect HTTP request
-        method
-      operationId: "NULL"
-      responses:
-        "404":
-          $ref: '#/responses/ErrorMessage'
   /add:
     post:
-      description: Create a new user
-      operationId: User
+      description: Create a new User
+      operationId: createUser
       responses:
         "200":
           $ref: '#/responses/OK'
         "400":
           $ref: '#/responses/BadRequest'
       tags:
-      - createUser
+      - User
   /getid:
     get:
-      description: Returns the ID of a user given their username
-      operationId: User
+      description: Returns the ID of a User given their username
+      operationId: getUserInfo
       responses:
         "200":
           $ref: '#/responses/OK'
         "400":
           $ref: '#/responses/BadRequest'
       tags:
-      - Username-Password
+      - User
   /login:
     post:
       description: Login an existing user
-      operationId: User
+      operationId: getLoginInfo
       responses:
         "200":
           $ref: '#/responses/OK'
         "400":
           $ref: '#/responses/BadRequest'
       tags:
-      - Username-Password
+      - User
   /time:
     get:
       description: Return current time
-      operationId: "NULL"
+      operationId: time
       responses:
         "200":
           $ref: '#/responses/OK'
-      tags:
-      - time
 produces:
 - application/json
 responses:

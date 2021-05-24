@@ -27,35 +27,41 @@ import (
 
 // @termsOfService http://swagger.io/terms/
 
+// User user
+//
 // User defines the structure for a Full User Record
 //
 // swagger:model user
 type User struct {
-
 	// The ID for the user
 	// in: body
 	//
 	// required: false
 	// min: 1
 	ID int `json:"id"`
+
 	// The Username of the user
 	// in: body
 	//
 	// required: true
 	Username string `json:"username"`
+
 	// The Password of the user
 	//
 	// required: true
 	Password string `json:"password"`
+
 	// The Last Login time of the User
 	//
 	// required: true
 	// min: 0
 	LastLogin int64 `json:"lastlogin"`
+
 	// Is the User Admin or not
 	//
 	// required: true
 	Admin int `json:"admin"`
+
 	// Is the User Logged In or Not
 	//
 	// required: true
@@ -106,18 +112,18 @@ func MethodNotAllowedHandler(rw http.ResponseWriter, r *http.Request) {
 func TimeHandler(rw http.ResponseWriter, r *http.Request) {
 }
 
-// swagger:route POST /add User createUser
+// swagger:route POST /add user createUser
 // Create a new User
 //
 // responses:
 //	200: OK
 //  400: BadRequest
 
-// AddHandler is for adding a new User
+// AddHandler is for adding a new user
 func AddHandler(rw http.ResponseWriter, r *http.Request) {
 }
 
-// swagger:route GET /getid User getUserInfo
+// swagger:route GET /getid user getUserInfo
 // Returns the ID of a User given their username
 //
 // responses:
@@ -128,7 +134,7 @@ func AddHandler(rw http.ResponseWriter, r *http.Request) {
 func GetIDHandler(rw http.ResponseWriter, r *http.Request) {
 }
 
-// swagger:route POST /login User getLoginInfo
+// swagger:route POST /login user getLoginInfo
 // Login an existing user
 //
 // responses:

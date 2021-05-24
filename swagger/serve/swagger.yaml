@@ -45,6 +45,7 @@ definitions:
     - lastlogin
     - admin
     - active
+    title: User user
     type: object
     x-go-name: User
     x-go-package: github.com/mactsouk/rest-api/swagger
@@ -72,7 +73,7 @@ paths:
         "400":
           $ref: '#/responses/BadRequest'
       tags:
-      - User
+      - user
   /getid:
     get:
       description: Returns the ID of a User given their username
@@ -83,7 +84,7 @@ paths:
         "400":
           $ref: '#/responses/BadRequest'
       tags:
-      - User
+      - user
   /login:
     post:
       description: Login an existing user
@@ -94,7 +95,7 @@ paths:
         "400":
           $ref: '#/responses/BadRequest'
       tags:
-      - User
+      - user
   /time:
     get:
       description: Return current time

@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/go-openapi/runtime/middleware"
 	"github.com/gorilla/mux"
 )
 
@@ -48,6 +49,11 @@ func main() {
 	getMux.Use(anotherMiddleWare)
 
 	mux.Use(middleWare)
+
+	opts := middleware.RedocOpts{SpecURL: "/swagger.yaml"}
+	sh := middleware.Redoc(opts, nil)
+	getMux.Handle("/docs", sh)
+	getMux.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
 
 	s := http.Server{
 		Addr:         PORT,

@@ -76,7 +76,6 @@ func (h notAllowedHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 // DeleteHandler is for deleting users based on user ID
 func DeleteHandler(rw http.ResponseWriter, r *http.Request) {
-
 }
 
 // swagger:route POST / DefaultHandler noContent

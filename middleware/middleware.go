@@ -38,7 +38,9 @@ func main() {
 	if len(arguments) >= 2 {
 		PORT = ":" + arguments[1]
 	}
+
 	mux := mux.NewRouter()
+	mux.Use(middleWare)
 
 	putMux := mux.Methods(http.MethodPut).Subrouter()
 	putMux.HandleFunc("/time", timeHandler)
@@ -46,8 +48,6 @@ func main() {
 	getMux := mux.Methods(http.MethodGet).Subrouter()
 	getMux.HandleFunc("/add", addHandler)
 	getMux.Use(anotherMiddleWare)
-
-	mux.Use(middleWare)
 
 	s := http.Server{
 		Addr:         PORT,

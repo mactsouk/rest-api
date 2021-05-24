@@ -2,7 +2,7 @@ basePath: /
 consumes:
 - application/json
 definitions:
-  user:
+  User:
     description: User defines the structure for a Full User Record
     properties:
       active:
@@ -45,24 +45,25 @@ definitions:
     - lastlogin
     - admin
     - active
-    title: User user
     type: object
-    x-go-name: User
     x-go-package: github.com/mactsouk/rest-api/swagger
 info:
   description: Documentation for REST API
-  title: For the RESTful Server
-  version: 1.0.5
+  title: for the RESTful Server
+  version: 1.0.7
 paths:
   /:
-    delete:
-      description: Default Handler for everything that is not a match
-      operationId: EMPTY
+    post:
+      description: Works with all HTTP methods
+      operationId: noContent
       responses:
+        "200":
+          $ref: '#/responses/noContent'
         "404":
           $ref: '#/responses/ErrorMessage'
+      summary: Default Handler for everything that is not a match.
       tags:
-      - Anything
+      - DefaultHandler
   /add:
     post:
       description: Create a new User
@@ -73,18 +74,62 @@ paths:
         "400":
           $ref: '#/responses/BadRequest'
       tags:
-      - user
+      - UserInput
+  /delete/{id}:
+    delete:
+      description: |-
+        Delete a user given their ID
+        The command should be issued by an admin user
+      operationId: deleteID
+      parameters:
+      - description: The user id to be deleted
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: ID
+      responses:
+        "200":
+          $ref: '#/responses/noContent'
+        "404":
+          $ref: '#/responses/ErrorMessage'
+      tags:
+      - DeleteUser
   /getid:
     get:
-      description: Returns the ID of a User given their username
-      operationId: getUserInfo
+      description: Returns the ID of a User given their username and password
+      operationId: loggedInfo
+      parameters:
+      - description: A list of users
+        in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/User'
       responses:
         "200":
           $ref: '#/responses/OK'
         "400":
           $ref: '#/responses/BadRequest'
       tags:
-      - user
+      - getUserId
+  /logged:
+    get:
+      description: Returns a list of logged in users
+      operationId: getUserInfo
+      parameters:
+      - description: A list of users
+        in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        "200":
+          $ref: '#/responses/UsersResponse'
+        "400":
+          $ref: '#/responses/BadRequest'
+      tags:
+      - logged
   /login:
     post:
       description: Login an existing user
@@ -99,7 +144,7 @@ paths:
   /time:
     get:
       description: Return current time
-      operationId: time
+      operationId: getTime
       responses:
         "200":
           $ref: '#/responses/OK'
@@ -112,6 +157,14 @@ responses:
     description: Generic error message returned as an HTTP Status Code
   OK:
     description: Generic OK message returned as an HTTP Status Code
+  UsersResponse:
+    description: A list of Users
+    schema:
+      items:
+        $ref: '#/definitions/User'
+      type: array
+  noContent:
+    description: Generic noContent message returned as an HTTP Status Code
 schemes:
 - http
 swagger: "2.0"

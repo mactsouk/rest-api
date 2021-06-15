@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestTimeHanlderV1(t *testing.T) {
+func TestTimeHanlder(t *testing.T) {
 	req, err := http.NewRequest("GET", "/time", nil)
 	if err != nil {
 		t.Fatal(err)
@@ -22,7 +22,7 @@ func TestTimeHanlderV1(t *testing.T) {
 			status, http.StatusOK)
 	}
 }
-func TestMethodNotAllowedV1(t *testing.T) {
+func TestMethodNotAllowed(t *testing.T) {
 	req, err := http.NewRequest("DELETE", "/time", nil)
 	if err != nil {
 		t.Fatal(err)

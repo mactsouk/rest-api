@@ -42,7 +42,7 @@ func TestMethodNotAllowed(t *testing.T) {
 }
 
 func TestLogin(t *testing.T) {
-	UserPass := []byte(`{"user": "admin", "password": "admin"}`)
+	UserPass := []byte(`{"username": "admin", "password": "admin"}`)
 	req, err := http.NewRequest("POST", "/login", bytes.NewBuffer(UserPass))
 	if err != nil {
 		t.Fatal(err)

@@ -131,8 +131,8 @@ func TestGetUserDataHandler(t *testing.T) {
 
 	expected := `[{"ID":1,"Username":"admin","Password":"admin","Lastlogin":0,"Admin":1,"Active":0}]`
 	serverResponse := rr.Body.String()
-	result := strings.Split(serverResponse, "lastlogin")
-	serverResponse = result[0] + `lastlogin":0,"admin":1,"active":0}]`
+	result := strings.Split(serverResponse, "Lastlogin")
+	serverResponse = result[0] + `Lastlogin":0,"Admin":1,"Active":0}]`
 
 	if serverResponse != expected {
 		t.Errorf("handler returned unexpected body: got %v but wanted %v",

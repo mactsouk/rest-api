@@ -42,7 +42,7 @@ func TestMethodNotAllowed(t *testing.T) {
 }
 
 func TestLogin(t *testing.T) {
-	UserPass := []byte(`{"username": "admin", "password": "admin"}`)
+	UserPass := []byte(`{"Username": "admin", "Password": "admin"}`)
 	req, err := http.NewRequest("POST", "/login", bytes.NewBuffer(UserPass))
 	if err != nil {
 		t.Fatal(err)
@@ -62,7 +62,7 @@ func TestLogin(t *testing.T) {
 }
 
 func TestLogout(t *testing.T) {
-	UserPass := []byte(`{"user": "admin", "password": "admin"}`)
+	UserPass := []byte(`{"Username": "admin", "Password": "admin"}`)
 	req, err := http.NewRequest("POST", "/logout", bytes.NewBuffer(UserPass))
 	if err != nil {
 		t.Fatal(err)
@@ -82,7 +82,7 @@ func TestLogout(t *testing.T) {
 }
 
 func TestAdd(t *testing.T) {
-	UserPass := []byte(`[{"user": "admin", "password": "admin"}, {"user": "test", "password": "myPass"}]`)
+	UserPass := []byte(`[{"Username": "admin", "Password": "admin"}, {"Username": "test", "Password": "myPass"}]`)
 	req, err := http.NewRequest("POST", "/add", bytes.NewBuffer(UserPass))
 	if err != nil {
 		t.Fatal(err)
@@ -102,7 +102,7 @@ func TestAdd(t *testing.T) {
 }
 
 func TestGetUserDataHandler(t *testing.T) {
-	UserPass := []byte(`{"username": "admin", "password": "admin"}`)
+	UserPass := []byte(`{"Username": "admin", "Password": "admin"}`)
 	req, err := http.NewRequest("GET", "/username/1", bytes.NewBuffer(UserPass))
 	if err != nil {
 		t.Fatal(err)

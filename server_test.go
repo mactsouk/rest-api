@@ -82,7 +82,7 @@ func TestLogout(t *testing.T) {
 }
 
 func TestAdd(t *testing.T) {
-	UserPass := []byte(`[{"user": "admin", "password": "1"}, {"user": "test", "password": "myPass"}]`)
+	UserPass := []byte(`[{"user": "admin", "password": "admin"}, {"user": "test", "password": "myPass"}]`)
 	req, err := http.NewRequest("POST", "/add", bytes.NewBuffer(UserPass))
 	if err != nil {
 		t.Fatal(err)

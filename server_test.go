@@ -115,7 +115,7 @@ func TestGetUserDataHandler(t *testing.T) {
 	vars := map[string]string{
 		"id": "1",
 	}
-	req = mux.SetURLVars(req, vars)
+	req = rMux.SetURLVars(req, vars)
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(GetUserDataHandler)

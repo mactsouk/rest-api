@@ -6,6 +6,8 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"github.com/gorilla/mux"
 )
 
 func TestTimeHanlder(t *testing.T) {
@@ -115,7 +117,7 @@ func TestGetUserDataHandler(t *testing.T) {
 	vars := map[string]string{
 		"id": "1",
 	}
-	req = rMux.SetURLVars(req, vars)
+	req = mux.SetURLVars(req, vars)
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(GetUserDataHandler)

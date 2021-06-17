@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -139,6 +140,9 @@ func TestGetUserDataHandler(t *testing.T) {
 
 	// Changing LastLoging to 0
 	result := strings.Split(serverResponse, "LastLogin")
+
+	fmt.Println(result[0])
+	fmt.Println(result[1])
 	serverResponse = result[0] + `LastLogin":0,"Admin":1,"Active":0}]`
 
 	if serverResponse != expected {

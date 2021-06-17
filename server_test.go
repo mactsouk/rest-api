@@ -129,7 +129,7 @@ func TestGetUserDataHandler(t *testing.T) {
 		return
 	}
 
-	expected := `[{"id":1,"user":"admin","password":"admin","lastlogin":0,"admin":1,"active":0}]`
+	expected := `[{"ID":1,"Username":"admin","Password":"admin","Lastlogin":0,"Admin":1,"Active":0}]`
 	serverResponse := rr.Body.String()
 	result := strings.Split(serverResponse, "lastlogin")
 	serverResponse = result[0] + `lastlogin":0,"admin":1,"active":0}]`

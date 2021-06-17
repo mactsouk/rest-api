@@ -102,12 +102,20 @@ func TestAdd(t *testing.T) {
 }
 
 func TestGetUserDataHandler(t *testing.T) {
+	t.Parallel()
+
 	UserPass := []byte(`{"Username": "admin", "Password": "admin"}`)
-	req, err := http.NewRequest("GET", "/username/id:1", bytes.NewBuffer(UserPass))
+	req, err := http.NewRequest("GET", "/username/1", bytes.NewBuffer(UserPass))
 	if err != nil {
 		t.Fatal(err)
 	}
 	req.Header.Set("Content-Type", "application/json")
+
+	// `gorilla/mux` provides the `SetURLVars` function for testing purposes
+	vars := map[string]string{
+		"id": "1",
+	}
+	req = mux.SetURLVars(req, vars)
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(GetUserDataHandler)

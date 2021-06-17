@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -84,7 +86,10 @@ func TestLogout(t *testing.T) {
 }
 
 func TestAdd(t *testing.T) {
-	UserPass := []byte(`[{"Username": "admin", "Password": "admin"}, {"Username": "test", "Password": "myPass"}]`)
+	now := int(time.Now().Unix())
+	username := "test_" + strconv.Itoa(now)
+	users := `[{"Username": "admin", "Password": "admin"}, {"Username":` + username + `, "Password": "myPass"}]`
+	UserPass := []byte(users)
 	req, err := http.NewRequest("POST", "/add", bytes.NewBuffer(UserPass))
 	if err != nil {
 		t.Fatal(err)
@@ -131,7 +136,9 @@ func TestGetUserDataHandler(t *testing.T) {
 
 	expected := `[{"ID":1,"Username":"admin","Password":"admin","LastLogin":0,"Admin":1,"Active":0}]`
 	serverResponse := rr.Body.String()
-	result := strings.Split(serverResponse, "Lastlogin")
+
+	// Changing LastLoging to 0
+	result := strings.Split(serverResponse, "LastLogin")
 	serverResponse = result[0] + `LastLogin":0,"Admin":1,"Active":0}]`
 
 	if serverResponse != expected {

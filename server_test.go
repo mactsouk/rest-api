@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -138,11 +137,8 @@ func TestGetUserDataHandler(t *testing.T) {
 	expected := `{"ID":1,"Username":"admin","Password":"admin","LastLogin":0,"Admin":1,"Active":0}`
 	serverResponse := rr.Body.String()
 
-	// Changing LastLoging to 0
+	// Changing current value of LastLoging to 0
 	result := strings.Split(serverResponse, "LastLogin")
-
-	fmt.Println(result[0])
-	fmt.Println(result[1])
 	serverResponse = result[0] + `LastLogin":0,"Admin":1,"Active":0}`
 
 	if serverResponse != expected {

@@ -88,7 +88,7 @@ func TestLogout(t *testing.T) {
 func TestAdd(t *testing.T) {
 	now := int(time.Now().Unix())
 	username := "test_" + strconv.Itoa(now)
-	users := `[{"Username": "admin", "Password": "admin"}, {"Username":` + username + `, "Password": "myPass"}]`
+	users := "[{\"Username\": \"admin\", \"Password\": \"admin\"}, {\"Username\":" + username + ", \"Password\": \"myPass\"}]"
 	UserPass := []byte(users)
 	req, err := http.NewRequest("POST", "/add", bytes.NewBuffer(UserPass))
 	if err != nil {

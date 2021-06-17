@@ -103,7 +103,7 @@ func TestAdd(t *testing.T) {
 
 func TestGetUserDataHandler(t *testing.T) {
 	UserPass := []byte(`{"Username": "admin", "Password": "admin"}`)
-	req, err := http.NewRequest("GET", "/username/1", bytes.NewBuffer(UserPass))
+	req, err := http.NewRequest("GET", "/username/id:1", bytes.NewBuffer(UserPass))
 	if err != nil {
 		t.Fatal(err)
 	}

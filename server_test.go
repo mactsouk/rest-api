@@ -12,7 +12,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func TestTimeHanlder(t *testing.T) {
+func TestTimeHandler(t *testing.T) {
 	req, err := http.NewRequest("GET", "/time", nil)
 	if err != nil {
 		t.Fatal(err)

@@ -88,9 +88,4 @@ func main() {
 		fmt.Println("User not Deleted.")
 	}
 
-	if restdb.DeleteUser(mtsoukUser.ID) {
-		fmt.Println("User Deleted.")
-	} else {
-		fmt.Println("User not Deleted.")
-	}
 }
